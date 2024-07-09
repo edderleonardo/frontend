@@ -11,18 +11,19 @@ const client = axios.create({
 export const useAuthStore = defineStore("auth", {
   state: () => {
     let token = null;
-    try {
-      token = window.localStorage.getItem("token");
-    } catch (error) {
-      token = "";
-      console.error("stores/auth.js ~ Error en el login:", error);
+    if (import.meta.client) {
+      try {
+        token = window.localStorage.getItem("token");
+      } catch (error) {
+        token = "";
+        console.error("stores/auth.js ~ Error en el login:", error);
+      }
     }
     return {
       token,
       authenticated: !!token,
     };
   },
-
   actions: {
     async login(email, password) {
       try {
@@ -30,40 +31,34 @@ export const useAuthStore = defineStore("auth", {
           email,
           password,
         });
-        this.token = response.data.access;
-        this.authenticated = true;
-        try {
-          localStorage.setItem("token", response.data.access);
-        } catch (error) {
-          console.error("stores/auth.js ~ Error en el login:", error);
-        }
+        this.setToken(response.data.access);
       } catch (error) {
         console.log("Error en el login:", error);
         throw error;
       }
     },
-
     logout() {
-      this.token = "";
-      this.authenticated = false;
-      if (import.meta.client) {
-        let token = null;
-        try {
-          localStorage.removeItem("token");
-        } catch (error) {
-          console.error("stores/auth.js ~ Error en el logout:", error);
-        }
-      }
+      this.setToken("");
     },
-
     setToken(token) {
       this.token = token;
-      this.authenticated = true;
-      try {
-        localStorage.setItem("token", token);
-      } catch (error) {
-        console.error("stores/auth.js ~ Error en el setToken:", error);
+      this.authenticated = !!token;
+      if (import.meta.client) {
+        try {
+          if (token) {
+            localStorage.setItem("token", token);
+          } else {
+            localStorage.removeItem("token");
+          }
+        } catch (error) {
+          console.error("stores/auth.js ~ Error en el setToken:", error);
+        }
       }
+      // Actualizar el cliente axios con el nuevo token
+      this.updateAxiosClient();
+    },
+    updateAxiosClient() {
+      client.defaults.headers.common['Authorization'] = this.token ? `Bearer ${this.token}` : '';
     },
   },
 });

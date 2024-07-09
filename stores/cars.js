@@ -6,7 +6,7 @@ import {
   updateCarRequest,
   deleteCarRequest,
   getInfringementRequest,
-} from "@/services/api";
+} from "@/services/api_requests";
 
 export const useCarsStore = defineStore("car", {
   state: () => ({

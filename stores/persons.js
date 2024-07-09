@@ -5,7 +5,7 @@ import {
   postPersonRequest,
   updatePersonRequest,
   deletePersonRequest,
-} from "@/services/api";
+} from "@/services/api_requests";
 
 export const usePersonStore = defineStore("person", {
   state: () => ({

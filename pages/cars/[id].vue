@@ -1,4 +1,8 @@
 <script setup>
+definePageMeta({
+  middleware: 'auth',
+})
+
 import { useCarsStore } from '~/stores/cars';
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
