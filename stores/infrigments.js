@@ -3,11 +3,13 @@ import { defineStore } from "pinia";
 import {
   getInfringementsByCar,
   postInfringementRequest,
+  getInfringementsByPersonEmail,
 } from "@/services/api_requests";
 
 export const useInfringementsStore = defineStore("infringements", {
   state: () => ({
     infringements: [],
+    infringementsByPerson: [],
     car: {},
     officer: {},
     loading: false,
@@ -42,5 +44,22 @@ export const useInfringementsStore = defineStore("infringements", {
         this.loading = false;
       }
     },
+
+    async fetchInfringementsByPersonEmail(data) {
+      this.loading = true;
+      try {
+        const response = await getInfringementsByPersonEmail(data);
+        console.log("🚀 ~ fetchInfringementsByPersonEmail ~ response:", response)
+        this.infringementsByPerson = response;
+        // this.car = response.car;
+        // this.officer = response.infringements[0].officer;
+      } catch (error) {
+        console.log("Error en fetchInfringementsByPersonEmail:", error);
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
   },
 });

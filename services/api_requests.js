@@ -118,3 +118,14 @@ export const postInfringementRequest = async (data) => {
     throw error;
   }
 };
+
+export const getInfringementsByPersonEmail = async (data) => {
+  try {
+    const response = await apiClient.post("infringements/generate-report/", data);
+    console.log("🚀 ~ getInfringementsByPersonEmail ~ response:", response)
+    return response.data;
+  } catch (error) {
+    console.log("Error en getInfringementsByPersonEmail:", error);
+    throw error;
+  }
+}

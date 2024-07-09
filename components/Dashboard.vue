@@ -125,6 +125,7 @@ onMounted(() => {
             </table>
         </div>
 
+        <InfrigmentsByEmail />
 
         <div v-if="isModalOpen" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
             aria-modal="true">
@@ -139,7 +140,8 @@ onMounted(() => {
                                 {{ isEditMode ? 'Editar Solicitud' : 'Agregar Solicitud' }}
                             </h3>
                             <div class="mt-2">
-                                <p class="text-sm text-gray-500">Aquí puedes {{ isEditMode ? 'editar' : 'agregar' }} a un persona.</p>
+                                <p class="text-sm text-gray-500">Aquí puedes {{ isEditMode ? 'editar' : 'agregar' }} a
+                                    un persona.</p>
                                 <br>
                                 <!-- Formulario para agregar solicitud -->
                                 <form @submit.prevent="handleSubmit" class="mt-5">
