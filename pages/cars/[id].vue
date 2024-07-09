@@ -1,13 +1,16 @@
 <script setup>
 definePageMeta({
-  middleware: 'auth',
+    middleware: 'auth',
 })
 
 import { useCarsStore } from '~/stores/cars';
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
 
+
 const route = useRoute();
+const router = useRouter();
+
 const store = useCarsStore();
 const { cars, owner, loading } = storeToRefs(store);
 
@@ -50,16 +53,14 @@ const handleSubmit = () => {
 };
 
 const createRequest = () => {
-    console.log('creating car...');
-    
-    const data = { 
+    const data = {
         patent_plate: patent_plate.value,
         brand: brand.value,
         color: color.value,
         owner: route.params.id
     };
-    
-    store.createCar(data);
+
+    store.createCar(data, );
 };
 
 const editRequest = (request) => {
@@ -72,13 +73,13 @@ const editRequest = (request) => {
 };
 
 const updateRequest = () => {
-    const data = { 
+    const data = {
         patent_plate: patent_plate.value,
         brand: brand.value,
         color: color.value,
         owner: route.params.id
     };
-    
+
     store.updateCar(currentCar.value.id, data);
 };
 
@@ -86,12 +87,11 @@ const deleteRequest = (id) => {
     store.deleteCar(id, idPerson);
 };
 
-const viewInfrigments = (id) => {
-    console.log('viewing infrigments...', id);
-};
+const viewInfrigments = async (id) => {
+    navigateTo(`/infrigments/car/${id}`);
+}
 
 onMounted(() => {
-    console.log('Fetching cars...');
     store.fetchCarsbyPerson(idPerson);
 });
 
@@ -118,9 +118,9 @@ onMounted(() => {
                 </thead>
                 <tbody>
                     <tr v-if="cars.length === 0">
-                    <td colspan="5" class="text-center py-4">No hay datos disponibles.</td>
+                        <td colspan="5" class="text-center py-4">No hay datos disponibles.</td>
                     </tr>
-                    <tr class="hover:bg-gray-50" v-else  v-for="car in cars" :key="car.id">
+                    <tr class="hover:bg-gray-50" v-else v-for="car in cars" :key="car.id">
                         <td class="px-4 py-2 border border-gray-200">{{ car.id }}</td>
                         <td class="px-4 py-2 border border-gray-200">{{ car.patent_plate }}</td>
                         <td class="px-4 py-2 border border-gray-200">{{ car.brand }}</td>
@@ -194,7 +194,6 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-
 
     </div>
 </template>

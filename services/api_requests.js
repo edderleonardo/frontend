@@ -26,7 +26,6 @@ export const postPersonRequest = async (data) => {
 export const updatePersonRequest = async (id, data) => {
   try {
     const response = await apiClient.put(`civils/${id}/`, data);
-    console.log("🚀 ~ updatePersonRequest ~ response:", response);
     return response.data;
   } catch (error) {
     console.log("Error en updatePersonRequest:", error);
@@ -92,6 +91,30 @@ export const getInfringementRequest = async (car_id) => {
     return response.data;
   } catch (error) {
     console.log("Error en getInfringementRequest:", error);
+    throw error;
+  }
+};
+
+// Infringements
+
+export const getInfringementsByCar = async (car_id) => {
+  try {
+    const response = await apiClient.get(`infringements/by-car/${car_id}/`);
+    console.log("🚀 ~ getInfringementsByCar ~ response:", response)
+    return response.data;
+  } catch (error) {
+    console.log("Error en getInfringementsByCar:", error);
+    throw error;
+  }
+}
+
+export const postInfringementRequest = async (data) => {
+  console.log("data", data);
+  try {
+    const response = await apiClient.post("infringements/", data);
+    return response.data;
+  } catch (error) {
+    console.log("Error en postInfringementRequest:", error);
     throw error;
   }
 };

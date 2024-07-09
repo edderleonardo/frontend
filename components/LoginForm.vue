@@ -11,7 +11,6 @@ export default {
     const login = async () => {
       try {
         await authStore.login(email.value, password.value)
-        console.log('Login success!');
         return  navigateTo('/')
       } catch (error) {
         console.error('Error en el login:', error)

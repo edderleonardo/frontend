@@ -18,12 +18,10 @@ export const useCarsStore = defineStore("car", {
 
   actions: {
     async fetchCarsbyPerson(person_id) {
-      console.log("person_id:", person_id);
 
       this.loading = true;
       try {
         const response = await getCarRequest(person_id);
-        console.log("🚀 ~ fetchCars ~ response", response);
         this.cars = response.cars;
         this.owner = response.owner;
       } catch (error) {
