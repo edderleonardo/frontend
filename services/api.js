@@ -1,10 +1,18 @@
 import axios from "axios";
 
+let token = "";
+try {
+  token = window.localStorage.getItem("token") || "";
+} catch (error) {
+  console.error("services/api.js ~ Error en el login:", error);
+  token = "";
+}
+
 const apiClient = axios.create({
   baseURL: "http://localhost:8000/api/",
   headers: {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + window?.localStorage ? localStorage.getItem("token") : "",
+    Authorization: `Bearer ${token}`,
   },
 });
 

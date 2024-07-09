@@ -8,13 +8,20 @@ const client = axios.create({
   },
 });
 
-console.log("🚀 ~ defineNuxtRouteMiddleware ~ window: 3", window)
-
 export const useAuthStore = defineStore("auth", {
-  state: () => ({
-    token: import.meta.client ? window?.localStorage : localStorage.getItem("token") || "", 
-    authenticated: import.meta.client && window?.localStorage ? !!localStorage.getItem("token") : false,
-  }),
+  state: () => {
+    let token = null;
+    try {
+      token = window.localStorage.getItem("token");
+    } catch (error) {
+      token = "";
+      console.error("stores/auth.js ~ Error en el login:", error);
+    }
+    return {
+      token,
+      authenticated: !!token,
+    };
+  },
 
   actions: {
     async login(email, password) {
@@ -25,8 +32,10 @@ export const useAuthStore = defineStore("auth", {
         });
         this.token = response.data.access;
         this.authenticated = true;
-        if (import.meta.client) {
-          window?.localStorage ? localStorage.setItem("token", response.data.access) : "";
+        try {
+          localStorage.setItem("token", response.data.access);
+        } catch (error) {
+          console.error("stores/auth.js ~ Error en el login:", error);
         }
       } catch (error) {
         console.log("Error en el login:", error);
@@ -38,17 +47,23 @@ export const useAuthStore = defineStore("auth", {
       this.token = "";
       this.authenticated = false;
       if (import.meta.client) {
-        localStorage.removeItem("token");
+        let token = null;
+        try {
+          localStorage.removeItem("token");
+        } catch (error) {
+          console.error("stores/auth.js ~ Error en el logout:", error);
+        }
       }
     },
 
     setToken(token) {
       this.token = token;
       this.authenticated = true;
-      if (import.meta.client) {
-        window?.localStorage ? localStorage.setItem("token", token) : "";
+      try {
+        localStorage.setItem("token", token);
+      } catch (error) {
+        console.error("stores/auth.js ~ Error en el setToken:", error);
       }
-    }
-
+    },
   },
 });

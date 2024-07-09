@@ -1,14 +1,19 @@
 import { useAuthStore } from "@/stores/auth";
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  console.log("🚀 ~ defineNuxtRouteMiddleware ~ window:", window)
-  
   if (import.meta.client) {
-    console.log("🚀 ~ defineNuxtRouteMiddleware ~ window 2:", window)
     const authStore = useAuthStore();
-    console.log('window?.localStorage ?', window?.localStorage ? localStorage.getItem("token") : "");
+    console.log('middleware/auth.js ~ window', window)
     
-    const token = window?.localStorage ? localStorage.getItem("token") : "";
+    let token = null
+    if (import.meta.client) {
+      try {
+        token = window.localStorage.getItem("token") || "";
+      } catch (error) {
+        console.error("middleware/auth.js ~ Error en el login:", error);
+        token = "";
+      }
+    }
     if (token) {
       authStore.setToken(token);
     }
