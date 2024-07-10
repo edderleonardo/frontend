@@ -1,3 +1,19 @@
+<script setup>
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+
+const logout = async () => {
+    try {
+        await authStore.logout()
+        return navigateTo('/login')
+    } catch (error) {
+        console.error('Error en el logout:', error)
+    }
+}
+
+</script>
+
 <template>
     <nav class="bg-white">
         <div class="container mx-auto px-4">
@@ -6,10 +22,7 @@
                     <router-link to="/" class="text-gray-800 text-xl font-semibold">Inicio</router-link>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <router-link to="/dashboard" class="text-gray-800 hover:text-gray-600">Dashboard</router-link>
-                    <router-link to="/personas" class="text-gray-800 hover:text-gray-600">Personas</router-link>
-                    <router-link to="/vehiculos" class="text-gray-800 hover:text-gray-600">Vehículos</router-link>
-                    <router-link to="/infracciones" class="text-gray-800 hover:text-gray-600">Infracciones</router-link>
+                    <a @click='logout' class="text-red-500 cursor-pointer font-semibold">Cerrar sesión</a>
                 </div>
             </div>
         </div>

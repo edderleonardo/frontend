@@ -82,11 +82,6 @@ onMounted(() => {
 
 <template>
     <div>
-        <!-- <slot name="breadcrumbs">
-            <div class="flex items-center">
-                <nuxt-link to="/" class="text-blue-500">Inicio</nuxt-link>
-            </div>
-        </slot> -->
         <h1 class="text-2xl font-semibold mb-4">Personas</h1>
         <p class="text-gray-500">Listado de personas registradas</p>
         <div class="flex justify-end mb-5">

@@ -11,16 +11,18 @@ const client = axios.create({
 export const useAuthStore = defineStore("auth", {
   state: () => {
     let token = null;
+    let refreshToken = null;
     if (import.meta.client) {
       try {
         token = window.localStorage.getItem("token");
+        refreshToken = window.localStorage.getItem("refreshToken");
       } catch (error) {
-        token = "";
-        console.error("stores/auth.js ~ Error en el login:", error);
+        console.error("stores/auth.js ~ Error al obtener tokens:", error);
       }
     }
     return {
       token,
+      refreshToken,
       authenticated: !!token,
     };
   },
@@ -31,34 +33,50 @@ export const useAuthStore = defineStore("auth", {
           email,
           password,
         });
-        this.setToken(response.data.access);
+        this.setTokens(response.data.access, response.data.refresh);
       } catch (error) {
         console.log("Error en el login:", error);
         throw error;
       }
     },
     logout() {
-      this.setToken("");
+      this.setTokens("", "");
     },
-    setToken(token) {
+    setTokens(token, refreshToken) {
       this.token = token;
+      this.refreshToken = refreshToken;
       this.authenticated = !!token;
       if (import.meta.client) {
         try {
           if (token) {
             localStorage.setItem("token", token);
+            localStorage.setItem("refreshToken", refreshToken);
           } else {
             localStorage.removeItem("token");
+            localStorage.removeItem("refreshToken");
           }
         } catch (error) {
-          console.error("stores/auth.js ~ Error en el setToken:", error);
+          console.error("stores/auth.js ~ Error en el setTokens:", error);
         }
       }
-      // Actualizar el cliente axios con el nuevo token
       this.updateAxiosClient();
     },
     updateAxiosClient() {
       client.defaults.headers.common['Authorization'] = this.token ? `Bearer ${this.token}` : '';
+    },
+    async refreshAccessToken() {
+      console.log("Refrescando token...");
+      try {
+        const response = await client.post("token/refresh/", {
+          refresh: this.refreshToken,
+        });
+        this.setTokens(response.data.access, this.refreshToken);
+        return response.data.access;
+      } catch (error) {
+        console.error("Error al refrescar el token:", error);
+        this.logout();
+        throw error;
+      }
     },
   },
 });

@@ -8,7 +8,6 @@ const client = axios.create({
   },
 });
 
-// Configurar un interceptor para añadir el token a cada petición
 client.interceptors.request.use(config => {
   const authStore = useAuthStore();
   if (authStore.token) {
@@ -16,6 +15,27 @@ client.interceptors.request.use(config => {
   }
   return config;
 });
+
+client.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const authStore = useAuthStore();
+      try {
+        const newToken = await authStore.refreshAccessToken();
+        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+        return client(originalRequest);
+      } catch (refreshError) {
+        // Si el refresh falla, redirigir al login
+        authStore.logout();
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const api = {
   get: (url, config = {}) => client.get(url, config),
