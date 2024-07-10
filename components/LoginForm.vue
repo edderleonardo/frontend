@@ -46,9 +46,9 @@ export default {
             class="bg-gray w-full px-5 py-3 text-base font-medium text-center rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300">
             Enviar
           </button>
-          <div class="text-sm font-medium text-gray-500">
+          <!-- <div class="text-sm font-medium text-gray-500">
             <a class="text-primary-700 hover:underline dark:text-primary-500 cursor-pointer">Crear una cuenta</a>
-          </div>
+          </div> -->
         </form>
       </div>
     </div>
